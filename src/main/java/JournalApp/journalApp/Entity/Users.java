@@ -21,7 +21,7 @@ public class Users {
     private ObjectId id;
     @Indexed(unique = true)
     @NonNull
-    private String UserName;
+    private String userName;
     @NonNull
     private String Password;
     @DBRef

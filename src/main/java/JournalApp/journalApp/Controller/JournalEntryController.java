@@ -32,10 +32,10 @@ public class JournalEntryController {
 
 
 
-    @GetMapping("{username}")
-   public ResponseEntity<?> getUserJournalentires(@PathVariable String username)
+    @GetMapping("{UserName}")
+   public ResponseEntity<?> getUserJournalentires(@PathVariable String userName)
    {
-       Users finduser=userService.findByUserName(username);
+       Users finduser=userService.findByUserName(userName);
        JournalEntry res= (JournalEntry) finduser.getJournalEntries();
        if(res != null)
        {
@@ -44,13 +44,13 @@ public class JournalEntryController {
        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
    }
 
-   @PostMapping("{UserName}")
-   public ResponseEntity createList(@RequestBody JournalEntry  myentry,@PathVariable String UserName)
+   @PostMapping("{userName}")
+   public ResponseEntity createList(@RequestBody JournalEntry  myentry,@PathVariable String userName)
    {
        ResponseMessage response=new ResponseMessage();
        try {
 
-           journalService.SaveEntry(myentry,UserName);
+           journalService.SaveEntry(myentry,userName);
            response.setServersides(HttpStatus.OK);
            response.setStatus("success");
            response.setMessage("Journal Entry added successfully");

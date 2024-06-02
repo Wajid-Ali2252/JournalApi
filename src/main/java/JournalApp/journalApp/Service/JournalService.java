@@ -21,12 +21,13 @@ public class JournalService {
     @Autowired
     private UserService userService;
 
-    public void SaveEntry(JournalEntry entry, String UserName)
+    public void SaveEntry(JournalEntry entry, String userName)
     {
         try {
-            System.out.println(UserName);
 
-            Users user=userService.findByUserName(UserName);
+
+            Users user=userService.findByUserName(userName);
+            System.out.println(user);
             JournalEntry saved=journalEntryRepo.save(entry);
             System.out.println("Saved"+saved);
             user.getJournalEntries().add(saved);

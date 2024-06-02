@@ -32,8 +32,8 @@ public class UserService {
     {
         usersRepo.save(users);
     }
-    public Users findByUserName(String username)
+  public Users findByUserName(String userName)
     {
-        return usersRepo.findByUserName(UserName);
+        return usersRepo.findByUserName(userName);
     }
 }

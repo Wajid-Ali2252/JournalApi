@@ -25,7 +25,7 @@ public class UserController {
     {
       try {
           userService.saveuser(user);
-          return new ResponseEntity<>(HttpStatus.CREATED);
+          return new ResponseEntity<>(user,HttpStatus.CREATED);
       }catch (Exception e)
       {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
