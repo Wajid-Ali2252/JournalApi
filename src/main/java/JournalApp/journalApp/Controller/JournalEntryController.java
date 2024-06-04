@@ -26,17 +26,17 @@ public class JournalEntryController {
 
     @Autowired
     private  UserService userService;
-    //private HttpStatusCode JournalEntry;
+    private HttpStatusCode JournalEntry;
 
 
 
 
 
-    @GetMapping("{UserName}")
+    @GetMapping("{userName}")
    public ResponseEntity<?> getUserJournalentires(@PathVariable String userName)
    {
        Users finduser=userService.findByUserName(userName);
-       JournalEntry res= (JournalEntry) finduser.getJournalEntries();
+       List<JournalEntry> res= finduser.getJournalEntries();
        if(res != null)
        {
            return  new ResponseEntity<>(res,HttpStatus.OK);
@@ -63,8 +63,8 @@ public class JournalEntryController {
 
    }
 
-   @GetMapping("/id/{myid}")
-  public ResponseEntity<JournalEntry> getbyid(@PathVariable ObjectId myid)
+   @GetMapping("/id/{userName}/{myid}")
+  public ResponseEntity<JournalEntry> getbyid(@PathVariable ObjectId myid,@PathVariable String userName)
   {
       Optional<JournalEntry> byid=journalService.getByid(myid);
       if(byid.isPresent())
@@ -75,12 +75,16 @@ public class JournalEntryController {
   }
 
 
-    @DeleteMapping("/id/{myid}")
+    @DeleteMapping("/id/{userName}/{myid}")
     public ResponseEntity<?> deleteListbyid(@PathVariable ObjectId myid)
     {
+        ResponseMessage responseMessage=new ResponseMessage();
         try{
             journalService.deleteByid(myid);
-            return new ResponseEntity<>(HttpStatus.OK);
+            responseMessage.setMessage("Journal Entries delete successfully");
+            responseMessage.setStatus("success");
+            responseMessage.setServersides(HttpStatus.OK);
+            return ResponseEntity.ok().body(responseMessage);
 
         }catch (Exception e)
         {
