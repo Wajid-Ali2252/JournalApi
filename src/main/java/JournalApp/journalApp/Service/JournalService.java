@@ -5,6 +5,7 @@ import JournalApp.journalApp.Entity.Users;
 import JournalApp.journalApp.Repo.JournalEntryRepo;
 
 import JournalApp.journalApp.Repo.UsersRepo;
+import org.apache.catalina.User;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,22 +25,14 @@ public class JournalService {
     public void SaveEntry(JournalEntry entry, String userName)
     {
         try {
-
-
             Users user=userService.findByUserName(userName);
-            System.out.println(user);
-            JournalEntry saved=journalEntryRepo.save(entry);
-            System.out.println("Saved"+saved);
+            JournalEntry saved = journalEntryRepo.save(entry);
             user.getJournalEntries().add(saved);
             userService.saveuser(user);
         }catch (Exception e)
         {
          e.printStackTrace();
         }
-
-        
-
-
     }
 
     public List<JournalEntry> alldata()
@@ -48,8 +41,11 @@ public class JournalService {
 
     }
 
-    public void deleteByid(ObjectId id)
+    public void deleteByid(ObjectId id,String userName)
     {
+        Users finduser=userService.findByUserName(userName);
+        finduser.getJournalEntries().removeIf(x -> x.getId().equals(id));
+        userService.saveuser(finduser);
         journalEntryRepo.deleteById(id);
 
     }

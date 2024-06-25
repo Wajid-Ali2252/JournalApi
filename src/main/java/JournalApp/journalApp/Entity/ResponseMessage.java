@@ -7,5 +7,5 @@ import org.springframework.http.HttpStatus;
 public class ResponseMessage {
     private String status;
     private String message;
-    private HttpStatus serversides;
+    private HttpStatus httpStatus;
 }

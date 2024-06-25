@@ -5,6 +5,7 @@ import JournalApp.journalApp.Entity.ResponseMessage;
 import JournalApp.journalApp.Entity.Users;
 import JournalApp.journalApp.Service.JournalService;
 import JournalApp.journalApp.Service.UserService;
+import org.apache.catalina.User;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class JournalEntryController {
     @Autowired
     private  UserService userService;
     private HttpStatusCode JournalEntry;
+    ResponseMessage response=new ResponseMessage();
 
 
 
@@ -35,26 +37,48 @@ public class JournalEntryController {
     @GetMapping("{userName}")
    public ResponseEntity<?> getUserJournalentires(@PathVariable String userName)
    {
-       Users finduser=userService.findByUserName(userName);
-       List<JournalEntry> res= finduser.getJournalEntries();
-       if(res != null)
+
+       try {
+           Users finduser=userService.findByUserName(userName);
+
+           if(finduser != null) {
+               List<JournalEntry> entries= finduser.getJournalEntries();
+                return  ResponseEntity.ok().body(entries);
+           }else {
+               ResponseMessage response = new ResponseMessage();
+               response.setHttpStatus(HttpStatus.NOT_FOUND);
+               response.setStatus("error");
+               response.setMessage(userName + " Not Found");
+               return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+           }
+
+
+       }catch (Exception e)
        {
-           return  new ResponseEntity<>(res,HttpStatus.OK);
+           e.printStackTrace();
+           return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
        }
-       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
    }
 
    @PostMapping("{userName}")
-   public ResponseEntity createList(@RequestBody JournalEntry  myentry,@PathVariable String userName)
+   public ResponseEntity<?> createList(@RequestBody JournalEntry  myentry,@PathVariable String userName)
    {
-       ResponseMessage response=new ResponseMessage();
-       try {
 
-           journalService.SaveEntry(myentry,userName);
-           response.setServersides(HttpStatus.OK);
-           response.setStatus("success");
-           response.setMessage("Journal Entry added successfully");
-           return ResponseEntity.ok().body(response);
+       try {
+           Users finduser=userService.findByUserName(userName);
+           if(finduser !=null) {
+               journalService.SaveEntry(myentry, userName);
+               response.setHttpStatus(HttpStatus.OK);
+               response.setStatus("success");
+               response.setMessage("Journal Entry added successfully");
+               return ResponseEntity.ok().body(response);
+           }else{
+               response.setHttpStatus(HttpStatus.NOT_FOUND);
+               response.setStatus("error");
+               response.setMessage(userName+" not found");
+               return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+           }
 
        }catch (Exception e)
        {
@@ -76,19 +100,27 @@ public class JournalEntryController {
 
 
     @DeleteMapping("/id/{userName}/{myid}")
-    public ResponseEntity<?> deleteListbyid(@PathVariable ObjectId myid)
+    public ResponseEntity<?> deleteListbyid(@PathVariable ObjectId myid,@PathVariable String userName)
     {
-        ResponseMessage responseMessage=new ResponseMessage();
+
         try{
-            journalService.deleteByid(myid);
-            responseMessage.setMessage("Journal Entries delete successfully");
-            responseMessage.setStatus("success");
-            responseMessage.setServersides(HttpStatus.OK);
-            return ResponseEntity.ok().body(responseMessage);
+            Users user=userService.findByUserName(userName);
+            if(user != null) {
+                journalService.deleteByid(myid,userName);
+                response.setMessage("Journal Entries delete successfully");
+                response.setStatus("success");
+                response.setHttpStatus(HttpStatus.OK);
+                return ResponseEntity.ok().body(response);
+            }else{
+                response.setMessage("Invalid user");
+                response.setStatus("error");
+                response.setHttpStatus(HttpStatus.NO_CONTENT);
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+            }
 
         }catch (Exception e)
         {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
