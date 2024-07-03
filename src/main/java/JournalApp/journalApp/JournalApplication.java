@@ -8,7 +8,11 @@ import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 //@SpringBootApplication
-@SpringBootApplication(exclude = {MongoAutoConfiguration.class})
+@SpringBootApplication
+//@SpringBootApplication(exclude = {
+//		MongoAutoConfiguration.class,
+//		MongoDataAutoConfiguration.class
+//})
 public class JournalApplication {
 
 	public static void main(String[] args) {
