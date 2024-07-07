@@ -26,10 +26,7 @@ public class UserService {
         user.setRoles(Collections.singletonList("ADMIN"));
         usersRepo.save(user);
     }
-//    public void savenewuser(Users user)
-//    {
-//        usersRepo.save(user);
-//    }
+
 
     public List<Users> getalluser() {
         return usersRepo.findAll();
