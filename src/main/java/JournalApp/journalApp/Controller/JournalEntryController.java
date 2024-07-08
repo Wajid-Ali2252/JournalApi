@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 //import org.springframework.http.HttpStatusCode;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,10 +37,11 @@ public class JournalEntryController {
 
 
 
-    @GetMapping("{userName}")
-   public ResponseEntity<?> getUserJournalentires(@PathVariable String userName)
+    @GetMapping
+   public ResponseEntity<?> getUserJournalentires()
    {
-
+       Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+       String userName=authentication.getName();
        try {
            Users finduser=userService.findByUserName(userName);
 
@@ -62,10 +65,11 @@ public class JournalEntryController {
 
    }
 
-   @PostMapping("{userName}")
-   public ResponseEntity<?> createList(@RequestBody JournalEntry  myentry,@PathVariable String userName)
+   @PostMapping
+   public ResponseEntity<?> createList(@RequestBody JournalEntry  myentry)
    {
-
+       Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+       String userName=authentication.getName();
        try {
            Users finduser=userService.findByUserName(userName);
            if(finduser !=null) {
@@ -88,9 +92,13 @@ public class JournalEntryController {
 
    }
 
-   @GetMapping("/id/{userName}/{myid}")
-  public ResponseEntity<JournalEntry> getbyid(@PathVariable ObjectId myid,@PathVariable String userName)
+   @GetMapping
+  public ResponseEntity<JournalEntry> getbyid(@PathVariable ObjectId myid)
   {
+      Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+      String userName=authentication.getName();
+
+
       Optional<JournalEntry> byid=journalService.getByid(myid);
       if(byid.isPresent())
       {
@@ -100,37 +108,41 @@ public class JournalEntryController {
   }
 
 
-    @DeleteMapping("/id/{userName}/{myid}")
-    public ResponseEntity<?> deleteListbyid(@PathVariable ObjectId myid,@PathVariable String userName)
-    {
+//    @DeleteMapping
+//    public ResponseEntity<?> deleteListbyid()
+//    {
+//        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+//        String userName=authentication.getName();
+//
+//        try{
+//            Users user=userService.findByUserName(userName);
+//            if(user != null) {
+//                journalService.deleteByid(myid,userName);
+//                response.setMessage("Journal Entries delete successfully");
+//                response.setStatus("success");
+//                response.setHttpStatus(HttpStatus.OK);
+//                return ResponseEntity.ok().body(response);
+//            }else{
+//                response.setMessage("Invalid user");
+//                response.setStatus("error");
+//                response.setHttpStatus(HttpStatus.NO_CONTENT);
+//                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
+//            }
+//
+//        }catch (Exception e)
+//        {
+//            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//    }
 
-        try{
-            Users user=userService.findByUserName(userName);
-            if(user != null) {
-                journalService.deleteByid(myid,userName);
-                response.setMessage("Journal Entries delete successfully");
-                response.setStatus("success");
-                response.setHttpStatus(HttpStatus.OK);
-                return ResponseEntity.ok().body(response);
-            }else{
-                response.setMessage("Invalid user");
-                response.setStatus("error");
-                response.setHttpStatus(HttpStatus.NO_CONTENT);
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(response);
-            }
-
-        }catch (Exception e)
-        {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-    }
-
-    @PutMapping("/id/{myid}")
-    public Optional<JournalEntry> updatebyid(@PathVariable ObjectId myid)
-    {
-        return Optional.ofNullable(journalService.getByid(myid).orElse(null));
-    }
+//    @PutMapping
+//    public Optional<JournalEntry> updatebyid()
+//    {
+//        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+//        String userName=authentication.getName();
+//        return Optional.ofNullable(journalService.getByid(myid).orElse(null));
+  //  }
 
 
 }

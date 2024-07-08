@@ -27,6 +27,11 @@ public class UserService {
         usersRepo.save(user);
     }
 
+    public void saveNewuser(Users user)
+    {
+        usersRepo.save(user);
+    }
+
 
     public List<Users> getalluser() {
         return usersRepo.findAll();
