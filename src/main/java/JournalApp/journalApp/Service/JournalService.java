@@ -1,11 +1,15 @@
 package JournalApp.journalApp.Service;
 
 import JournalApp.journalApp.Entity.JournalEntry;
+import JournalApp.journalApp.Entity.ResponseMessage;
 import JournalApp.journalApp.Entity.Users;
 import JournalApp.journalApp.Repo.JournalEntryRepo;
 
+import org.apache.coyote.Response;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -41,15 +45,29 @@ public class JournalService {
 
     public void deleteByid(ObjectId id,String userName)
     {
+
         Users finduser=userService.findByUserName(userName);
-        finduser.getJournalEntries().removeIf(x -> x.getId().equals(id));
-        userService.saveNewuser(finduser);
-        journalEntryRepo.deleteById(id);
+        boolean removed=finduser.getJournalEntries().removeIf(x->x.getId().equals(id));
+        if(removed) {
+            userService.saveNewuser(finduser);
+            journalEntryRepo.deleteById(id);
+        }else{
+            throw new RuntimeException("error occuring on delete entry");
+        }
+
 
     }
     public Optional<JournalEntry> getByid(ObjectId id)
     {
        return journalEntryRepo.findById(id);
+    }
+
+    public Optional<JournalEntry> findByid(ObjectId myid) {
+        return journalEntryRepo.findById(myid);
+    }
+    public  JournalEntry SaveEntry(JournalEntry entry)
+    {
+       return journalEntryRepo.save(entry);
     }
 //    public JournalEntry updateByid(ObjectId id, @RequestBody JournalEntry myentry)
 //    {
