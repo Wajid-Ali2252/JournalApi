@@ -1,8 +1,10 @@
 package JournalApp.journalApp.Controller;
 
 import JournalApp.journalApp.Entity.Users;
+import JournalApp.journalApp.Entity.WeatherResponse;
 import JournalApp.journalApp.Repo.UsersRepo;
 import JournalApp.journalApp.Service.UserService;
+import JournalApp.journalApp.Service.WeatherService;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +21,17 @@ public class UserController {
     private UserService userService;
     @Autowired
     private UsersRepo usersRepo;
+    @Autowired
+    WeatherService weatherService;
 
 
-
+    @GetMapping
+    public ResponseEntity<?> greeting(){
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        String userName=authentication.getName();
+        WeatherResponse res = weatherService.getWeather("Karachi");
+        return ResponseEntity.ok(res);
+    }
 
     @DeleteMapping
     public ResponseEntity<?> deleteuser(@RequestBody Users users){
