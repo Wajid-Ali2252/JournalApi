@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 
 //@SpringBootApplication
 @SpringBootApplication
+
 public class JournalApplication {
 
 	public static void main(String[] args) {

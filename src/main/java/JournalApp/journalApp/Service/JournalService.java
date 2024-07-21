@@ -8,6 +8,7 @@ import JournalApp.journalApp.Repo.JournalEntryRepo;
 import org.apache.coyote.Response;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,9 @@ public class JournalService {
     private JournalEntryRepo journalEntryRepo;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    MongoTemplate mongoTemplate;
 
     public void SaveEntry(JournalEntry entry, String userName)
     {
